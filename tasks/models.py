@@ -43,6 +43,7 @@ class Task(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
     status = models.CharField(max_length=255, choices=Status.choices, default=Status.TO_DO)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
