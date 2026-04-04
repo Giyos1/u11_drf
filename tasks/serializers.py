@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from accounts.serializers import UserSerializer
-from tasks.models import Project
+from tasks.models import Project, Task
 
 
 # class ProjectSerializer(serializers.Serializer):
@@ -25,9 +25,9 @@ from tasks.models import Project
 #         instance.description = validated_data.get('description', instance.description)
 #         instance.save()
 #         return instance
-    #
-    # def save(self, **kwargs):
-    #     pass
+#
+# def save(self, **kwargs):
+#     pass
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,3 +46,34 @@ class ProjectListSerializer(serializers.Serializer):
     owner = UserSerializer()
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
+
+
+class TaskListSerializer(serializers.ModelSerializer):
+    assigned_to = UserSerializer()
+
+    class Meta:
+        model = Task
+        fields = (
+            "id",
+            "title",
+            "description",
+            'assigned_to',
+            "status",
+            'created_at',
+            'updated_at',
+        )
+
+
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = (
+            "id",
+            "title",
+            "description",
+            'assigned_to',
+            'project',
+            "status",
+            'created_at',
+            'updated_at',
+        )
