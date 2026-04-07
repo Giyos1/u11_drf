@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from rest_framework import serializers
 from accounts.serializers import UserSerializer
 from tasks.models import Project, Task

@@ -1,20 +1,20 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from rest_framework import status, viewsets, mixins
+from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from tasks.models import Post, Project, Task, Status
+from tasks.models import Project, Task, Status
 from tasks.serializers import ProjectSerializer, ProjectListSerializer, TaskSerializer, TaskListSerializer
 
 
-def post_list(request):
-    posts = Post.objects.all()
-    posts_list = []
-    for post in posts:
-        posts_list.append({"id": post.id, "title": post.title, "content": post.content})
-    return JsonResponse(posts_list, safe=False)
+# def post_list(request):
+#     posts = Post.objects.all()
+#     posts_list = []
+#     for post in posts:
+#         posts_list.append({"id": post.id, "title": post.title, "content": post.content})
+#     return JsonResponse(posts_list, safe=False)
 
 
 class ProjectView(APIView):
