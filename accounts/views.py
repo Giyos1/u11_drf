@@ -1,5 +1,6 @@
 from django.contrib.auth import login, logout
 from rest_framework import viewsets, status, permissions
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -8,6 +9,7 @@ from accounts.serializers import LoginSerializer, UserSerializer, RegistrationSe
 
 class AuthViewSet(viewsets.ViewSet):
     serializer_class = LoginSerializer
+    authentication_classes = (TokenAuthentication,)
     permission_classes = [permissions.AllowAny]
 
     def get_serializer_class(self):
@@ -26,13 +28,17 @@ class AuthViewSet(viewsets.ViewSet):
         serializers = LoginSerializer(data=request.data)
         if serializers.is_valid():
             user = serializers.validated_data.get('user')
-            login(request, user)
-            return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+            token = user.token
+            return Response({'token': token}, status=status.HTTP_201_CREATED)
+            # login(request, user)
+            # return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['delete'], detail=False)
     def logout_user(self, request):
-        logout(request)
+        # session logout
+        # logout(request)
+        request.user.auth_token.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(methods=['get'], detail=False)
