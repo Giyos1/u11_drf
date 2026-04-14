@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # 3 rd
     "rest_framework",
     "rest_framework.authtoken",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -80,15 +81,22 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS':
+        'tasks.pagination.CustomPagination',
+    'PAGE_SIZE': 2
 }
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "u11_drf",
+        "USER": "giyos",
+        "PASSWORD": "12",
+        "HOST": "127.0.0.1",
+        "PORT": "5432",
     }
 }
 

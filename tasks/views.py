@@ -1,12 +1,16 @@
+# from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, mixins
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets, mixins, filters
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from tasks.models import Project, Task, Status
 from tasks.serializers import ProjectSerializer, ProjectListSerializer, TaskSerializer, TaskListSerializer
+from django.contrib.postgres.search import TrigramSimilarity
 
 
 # def post_list(request):
@@ -72,6 +76,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
+
+
+
 class TaskViewSet(viewsets.GenericViewSet,
                   mixins.ListModelMixin,
                   mixins.CreateModelMixin,
@@ -81,11 +88,44 @@ class TaskViewSet(viewsets.GenericViewSet,
                   ):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+    filter_backends = [
+        filters.SearchFilter,
+        DjangoFilterBackend,
+        filters.OrderingFilter
+    ]
+    search_fields = [
+        'title',
+        'description',
+    ]
+    filterset_fields = [
+        'status',
+        'assigned_to',
+        'project',
+    ]
+    ordering_fields = [
+        'created_at',
+    ]
 
     def get_serializer_class(self):
         if self.action in ("list", 'retrieve'):
             return TaskListSerializer
         return TaskSerializer
 
-    def get_queryset(self):
-        return self.queryset.exclude(status=Status.REJECTED)
+    # def get_queryset(self):
+    #     # search = self.request.GET.get('search')
+    #     # if search:
+    #     #     self.queryset = self.queryset.filter(Q(title__icontains=search) | Q(description__icontains=search))
+    #     return self.queryset.exclude(status=Status.REJECTED)
+
+    # def get_queryset(self):
+    #     q = self.request.query_params.get('search')
+    #     qs = Task.objects.all()
+    #     if q:
+    #         qs = qs.annotate(
+    #             similarity=TrigramSimilarity(
+    #                 'title', q
+    #             )
+    #         ).filter(
+    #             similarity__gt=0.1  # 30% o'xshashlik
+    #         ).order_by('-similarity')
+    #     return qs
