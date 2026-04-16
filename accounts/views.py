@@ -9,7 +9,7 @@ from accounts.serializers import LoginSerializer, UserSerializer, RegistrationSe
 
 class AuthViewSet(viewsets.ViewSet):
     serializer_class = LoginSerializer
-    authentication_classes = (TokenAuthentication,)
+    # authentication_classes = (TokenAuthentication,)
     permission_classes = [permissions.AllowAny]
 
     def get_serializer_class(self):
