@@ -71,8 +71,8 @@ REST_FRAMEWORK = {
         'accounts.authentification.CsrfExemptSessionAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
         # 'rest_framework.authentication.TokenAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # 'accounts.authentification.JWTAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'accounts.authentification.JWTAuthentication',
 
     ),
     'DEFAULT_PAGINATION_CLASS':

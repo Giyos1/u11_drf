@@ -5,10 +5,11 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,  # Refresh → yangi access
     TokenBlacklistView,  # Logout → blacklist
 )
-from accounts.views import AuthViewSet
+from accounts.views import AuthViewSet, JWTAuthViewSet
 
 router = DefaultRouter()
 router.register('auth', AuthViewSet, basename='auth')
+router.register('jwt-auth', JWTAuthViewSet, basename='jwt-auth')
 urlpatterns = [
     path('', include(router.urls)),
     path('token/', TokenObtainPairView.as_view(), name='token'),

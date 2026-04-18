@@ -50,3 +50,22 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, data):
         return User.objects.create_user(**data)
+
+
+class JWTLoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        username = data.get('username')
+        password = data.get('password')  # 12,21
+
+        user = authenticate(username=username, password=password)
+        if not user:
+            raise serializers.ValidationError('parrol yoki username xato')
+
+        return {'user': user}
+
+
+class BlackListSerializer(serializers.Serializer):
+    refresh_token = serializers.CharField()

@@ -3,6 +3,8 @@ import jwt, datetime
 SECRET_KEY = 'your_secret_key'
 REFRESH_SECRET = 'your_refresh_secret'
 
+blacklisted_users = []
+
 
 def create_tokens(user_id):
     access_payload = {
@@ -24,6 +26,8 @@ def create_tokens(user_id):
 
 def verify_token(token, secret,
                  expected_type='access'):
+    if token in blacklisted_users:
+        return None
     try:
         payload = jwt.decode(
             token, secret, algorithms=['HS256']
