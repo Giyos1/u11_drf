@@ -1,6 +1,9 @@
-from django.test import TestCase
+from django.test import TestCase, Client
+from django.urls import reverse_lazy
+from rest_framework import status
 from rest_framework.exceptions import ErrorDetail
 
+from accounts.models import User
 from accounts.serializers import RegistrationSerializer
 
 
@@ -41,3 +44,20 @@ class RegistrationSerializerTest(TestCase):
         user = self.serializer.save()
         self.assertEqual(user.username, 'test')
         self.assertEqual(user.first_name, 'test')
+
+
+class JwtTokenEndPointTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='test', password='test')
+        self.data_valid = {
+            'username': 'test',
+            'password': 'test',
+        }
+        self.token_url = reverse_lazy('token')
+        self.client = Client()
+
+    def test_token(self):
+        response = self.client.post(self.token_url, data=self.data_valid)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('access', response.json())
+        self.assertIn('refresh', response.json())
