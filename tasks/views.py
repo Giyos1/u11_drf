@@ -2,6 +2,8 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, mixins, filters
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -27,6 +29,18 @@ class ProjectView(APIView):
         serializer = ProjectListSerializer(projects, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+    @swagger_auto_schema(
+        operation_summary='project_create',
+        operation_description='create a new project',
+        request_body=ProjectSerializer,
+        responses={
+            200: openapi.Response(
+                'Muvaffaqiyatli',
+                ProjectSerializer,
+            ),
+        }
+
+    )
     def post(self, request):
         serializer = ProjectSerializer(data=request.data)
         # if serializer.is_valid():
@@ -74,9 +88,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
         tasks = Task.objects.filter(project=project)
         serializer = self.get_serializer(tasks, many=True)
         return Response(serializer.data)
-
-
-
 
 
 class TaskViewSet(viewsets.GenericViewSet,

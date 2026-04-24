@@ -37,7 +37,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             'confirm_password'
         )
         extra_kwargs = {
-            'password': {'write_only': True},
+            'password': {'write_only': True,'help_text': 'passwordni mukammal yoz !!'},
             'last_name': {'required': False},
         }
 

@@ -11,7 +11,7 @@ from accounts.serializers import LoginSerializer, UserSerializer, RegistrationSe
     BlackListSerializer
 
 
-class AuthViewSet(viewsets.ViewSet):
+class AuthViewSet(viewsets.GenericViewSet):
     serializer_class = LoginSerializer
     # authentication_classes = (TokenAuthentication,)
     permission_classes = [permissions.AllowAny]
@@ -19,8 +19,9 @@ class AuthViewSet(viewsets.ViewSet):
     def get_serializer_class(self):
         if self.action == 'register':
             return RegistrationSerializer
-        else:
+        if self.action == 'create':
             return LoginSerializer
+        return self.serializer_class
 
     def get_permissions(self):
         if self.action in ('logout_user', 'sessions'):
@@ -29,7 +30,7 @@ class AuthViewSet(viewsets.ViewSet):
             return [permissions.AllowAny()]
 
     def create(self, request, *args, **kwargs):
-        serializers = LoginSerializer(data=request.data)
+        serializers = self.serializer_class(data=request.data)
         if serializers.is_valid():
             user = serializers.validated_data.get('user')
             token = user.token
@@ -50,7 +51,7 @@ class AuthViewSet(viewsets.ViewSet):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
 
-    @action(methods=['post'], detail=False, serializer_class=RegistrationSerializer)
+    @action(methods=['post'], detail=False)
     def register(self, request):
         serializer = RegistrationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -58,7 +59,7 @@ class AuthViewSet(viewsets.ViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class JWTAuthViewSet(viewsets.ViewSet):
+class JWTAuthViewSet(viewsets.GenericViewSet):
     serializer_class = JWTLoginSerializer
     permission_classes = [permissions.AllowAny]
 
@@ -70,6 +71,8 @@ class JWTAuthViewSet(viewsets.ViewSet):
 
     def get_serializer_class(self):
         if self.action == 'logout_user':
+            return BlackListSerializer
+        elif self.action == 'refresh_token':
             return BlackListSerializer
         else:
             return JWTLoginSerializer

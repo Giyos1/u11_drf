@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "django_filters",
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
@@ -71,8 +72,8 @@ REST_FRAMEWORK = {
         'accounts.authentification.CsrfExemptSessionAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
         # 'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'accounts.authentification.JWTAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'accounts.authentification.JWTAuthentication',
 
     ),
     'DEFAULT_PAGINATION_CLASS':
@@ -139,3 +140,16 @@ AUTH_USER_MODEL = "accounts.User"
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer <JWT_TOKEN>",
+        },
+    },
+    "DOC_EXPANSION": False,  # yopiq holda ochilsin
+    "USE_SESSION_AUTH": False,
+}
