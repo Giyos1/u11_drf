@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from celery import shared_task
 from django.core.mail import send_mail
 
@@ -15,3 +17,9 @@ def send_gmail(mail, message):
         from_email="giyosoripov4@gmail.com",
         recipient_list=[mail],
     )
+
+
+@shared_task
+def print_time():
+    now = datetime.now()
+    print(f'vaqt {now}')

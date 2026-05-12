@@ -71,7 +71,7 @@ class ProjectView(APIView):
 #         return Response({"message": "hello world"})
 
 class ProjectViewSet(viewsets.ModelViewSet):
-    queryset = Project.objects.all()
+    queryset = Project.objects.select_related('owner').prefetch_related('owners')
     serializer_class = ProjectListSerializer
 
     def get_serializer_class(self):

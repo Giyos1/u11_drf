@@ -34,7 +34,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = (
             "title",
             "description",
-            "owner"
+            "owner",
+            "owners"
         )
 
 
@@ -43,6 +44,7 @@ class ProjectListSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=255)
     description = serializers.CharField()
     owner = UserSerializer()
+    owners = UserSerializer(many=True)
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
 

@@ -15,6 +15,7 @@ class Project(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    owners = models.ManyToManyField(User, related_name='projects')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
