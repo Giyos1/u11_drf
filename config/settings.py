@@ -13,11 +13,12 @@ SECRET_KEY = 'django-insecure-eawajsvf!)$1g=^tfvkn-bw)$=4__o2sh!(u)m2gpstaov8vnd
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,6 +39,8 @@ INSTALLED_APPS = [
     "drf_yasg",
     "django_celery_beat",
     "debug_toolbar",
+    "channels",
+    "chat",
 ]
 
 MIDDLEWARE = [
@@ -68,7 +71,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
+# WSGI_APPLICATION = 'config.wsgi.application'
+ASGI_APPLICATION = "config.asgi.application"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -182,3 +186,12 @@ EMAIL_USE_SSL = False
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}

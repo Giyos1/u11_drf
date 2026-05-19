@@ -59,4 +59,4 @@ def refresh_access_token(refresh_token):
 
 
 if __name__ == '__main__':
-    pass
+    print(create_tokens(1))
