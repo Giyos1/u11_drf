@@ -8,8 +8,10 @@ from rest_framework import viewsets, mixins, filters
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle, AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
 
+from accounts.throttles import SubscriptionTierThrottle
 from tasks.models import Project, Task, Status
 from tasks.serializers import ProjectSerializer, ProjectListSerializer, TaskSerializer, TaskListSerializer
 from django.contrib.postgres.search import TrigramSimilarity
@@ -116,6 +118,9 @@ class TaskViewSet(viewsets.GenericViewSet,
     ordering_fields = [
         'created_at',
     ]
+    throttle_classes = [SubscriptionTierThrottle]
+
+    # throttle_scope = 'tasks'
 
     def get_serializer_class(self):
         if self.action in ("list", 'retrieve'):

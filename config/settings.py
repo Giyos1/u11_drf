@@ -85,7 +85,20 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS':
         'tasks.pagination.CustomPagination',
-    'PAGE_SIZE': 2
+    'PAGE_SIZE': 2,
+
+    # throttle
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.ScopedRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '2/minute',  # Anonim userlarga kuniga 100 ta so'rov
+        'user': '100/minute',
+        'tasks': '5/minute',
+        'tier': '1/min',  # fallback (baribir override qilasan)
+    }
 }
 
 # Database
