@@ -1,20 +1,25 @@
 # from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.core.cache import cache
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets, mixins, filters
 from rest_framework.decorators import action
-from rest_framework.pagination import PageNumberPagination
+# from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.throttling import ScopedRateThrottle, AnonRateThrottle, UserRateThrottle
+# from rest_framework.throttling import ScopedRateThrottle, AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
 
 from accounts.throttles import SubscriptionTierThrottle
-from tasks.models import Project, Task, Status
+from config.settings import CACHE_TTL
+from tasks.models import Project, Task  # , Status
 from tasks.serializers import ProjectSerializer, ProjectListSerializer, TaskSerializer, TaskListSerializer
-from django.contrib.postgres.search import TrigramSimilarity
+
+# from django.contrib.postgres.search import TrigramSimilarity
+
+TASK_LIST_CACHE_KEY = 'project_list'
 
 
 # def post_list(request):
@@ -145,3 +150,27 @@ class TaskViewSet(viewsets.GenericViewSet,
     #             similarity__gt=0.1  # 30% o'xshashlik
     #         ).order_by('-similarity')
     #     return qs
+
+    def list(self, request, *args, **kwargs):
+        cached = cache.get(TASK_LIST_CACHE_KEY)
+
+        if cached:
+            return Response(data={
+                'source': 'cached',
+                'data': cached,
+            })
+
+        tasks = self.get_queryset()
+        serializer = self.get_serializer(tasks, many=True)
+        cache.set(TASK_LIST_CACHE_KEY, serializer.data, CACHE_TTL)
+        return Response(data={
+            'source': 'db',
+            'data': serializer.data,
+        })
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        cache.delete(TASK_LIST_CACHE_KEY)
+        return Response(serializer.data, status=201)

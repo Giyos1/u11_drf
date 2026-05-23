@@ -208,3 +208,29 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+# ─── LocMemCache (development) ─────────────────────────
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+#         'LOCATION': 'posts-cache',  # cache nomi
+#     }
+# }
+
+# TTL — cache qancha vaqt yashaydi (soniyada)
+# CACHE_TTL = 60 * 5  # 5 daqiqa
+# CACHE_TTL = 60 * 60  # 1 soat
+# CACHE_TTL = 60 * 60 * 24  # 1 kun
+
+# Faqat CACHES ni o'zgartiring — boshqa hech narsa emas!
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
+CACHE_TTL = 60 * 5
