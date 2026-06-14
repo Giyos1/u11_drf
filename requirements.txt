@@ -13,3 +13,4 @@ daphne==4.2.1
 channels_redis==4.3.0
 channels==4.3.2
 python-decouple==3.8
+django-redis==6.0.0

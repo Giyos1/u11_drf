@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtualenv
+.venv/
+venv/
+ENV/
+
+# Env / secrets
+.env
+
+# Local dev DB / dumps
+db.sqlite3
+dump.rdb
+
+# Collected static (built inside image)
+staticfiles/
+
+# Git / IDE
+.git/
+.gitignore
+.idea/
+.vscode/
+
+# Docker
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# OS
+.DS_Store
